@@ -225,7 +225,6 @@ ___
 
 Represents a column, optimized for date time values.
 
-**Be sure to install the [Moment.js](https://momentjs.com/) plugin before using this column.**
 **Be sure to install the [Bootstrap Date Range Picker](http://www.daterangepicker.com/) plugin before using the DateRangeFilter.**
 
 ### Options template
@@ -244,8 +243,7 @@ All options of [Column](#1-column).
 
 | Option      | Type   | Default | Required | Description              |
 |-------------|--------|---------|----------|--------------------------|
-| date_format | string | lll     |          | Moment.js date format.   |
-| timeago     | bool   | false   |          | Use the time ago format. |
+| date_format | string | lll     |          | PHP date format.         |
 
 ### Example
 

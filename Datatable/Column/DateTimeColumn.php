@@ -39,8 +39,6 @@ class DateTimeColumn extends AbstractColumn
      * Moment.js date format.
      * Default: 'lll'
      *
-     * @link http://momentjs.com/
-     *
      * @var string
      */
     protected $dateFormat;

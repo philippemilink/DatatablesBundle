@@ -24,16 +24,7 @@
     </div>
 {% endif %}
 
+{# modified as told in https://github.com/stwe/DatatablesBundle/issues/594: #}
 {% if data is not same as(null) %}
-    <script type="text/javascript">
-        $(function() {
-            moment.locale("{{ app.request.locale }}");
-
-            {% if timeago is same as(false) %}
-                $("#{{ datetime_id_selector }}").html(moment.unix({{ data|date('U') }}).format("{{ date_format }}"));
-            {% else %}
-                $("#{{ datetime_id_selector }}").html(moment.unix({{ data|date('U') }}).fromNow());
-            {% endif %}
-        });
-    </script>
+    {{ data|date(date_format) }}
 {% endif %}
