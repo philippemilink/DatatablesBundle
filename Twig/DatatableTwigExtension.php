@@ -120,6 +120,8 @@ class DatatableTwigExtension extends Twig_Extension
      */
     public function datatablesRender(Twig_Environment $twig, DatatableInterface $datatable)
     {
+        $datatable->computeTotals();
+
         return $twig->render(
             '@SgDatatables/datatable/datatable.html.twig',
             array(
@@ -138,6 +140,8 @@ class DatatableTwigExtension extends Twig_Extension
      */
     public function datatablesRenderHtml(Twig_Environment $twig, DatatableInterface $datatable)
     {
+        $datatable->computeTotals();
+
         return $twig->render(
             '@SgDatatables/datatable/datatable_html.html.twig',
             array(

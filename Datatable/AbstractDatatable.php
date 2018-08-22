@@ -12,6 +12,7 @@
 namespace Sg\DatatablesBundle\Datatable;
 
 use Sg\DatatablesBundle\Datatable\Column\ColumnBuilder;
+use Sg\DatatablesBundle\Response\DatatableQueryBuilder;
 
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -318,6 +319,35 @@ abstract class AbstractDatatable implements DatatableInterface
     public function getUniqueName()
     {
         return $this->getName().($this->getUniqueId() > 1 ? '-'.$this->getUniqueId() : '');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDisplayTotals()
+    {
+        foreach ($this->getColumnBuilder()->getColumns() as $column) {
+            if ($column->getComputeTotal()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function computeTotals()
+    {
+        if ($this->getDisplayTotals()) {
+            $datatableQueryBuilder = new DatatableQueryBuilder(array(), $this);
+            $totals = $datatableQueryBuilder->getComputedTotals();
+
+            foreach ($totals as $key => $value) {
+                $this->getColumnBuilder()->setColumnTotal($key, $value);
+            }
+        }
     }
 
     //-------------------------------------------------

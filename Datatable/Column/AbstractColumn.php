@@ -298,6 +298,22 @@ abstract class AbstractColumn implements ColumnInterface
      * @var bool
      */
     protected $sentInResponse;
+
+    /**
+     * If this column displays the total of its cells in its head
+     * Default: false
+     *
+     * @var bool
+     */
+    protected $computeTotal;
+
+    /**
+     * Contains the eventually computed total of the column
+     *
+     * @var mixed
+     */
+    protected $total;
+
     //-------------------------------------------------
     // Options
     //-------------------------------------------------
@@ -332,6 +348,7 @@ abstract class AbstractColumn implements ColumnInterface
             'type_of_field' => null,
             'responsive_priority' => null,
             'sent_in_response' => true,
+            'compute_total' => false
         ));
 
         $resolver->setAllowedTypes('cell_type', array('null', 'string'));
@@ -353,6 +370,7 @@ abstract class AbstractColumn implements ColumnInterface
         $resolver->setAllowedTypes('type_of_field', array('null', 'string'));
         $resolver->setAllowedTypes('responsive_priority', array('null', 'int'));
         $resolver->setAllowedTypes('sent_in_response', array('bool'));
+        $resolver->setAllowedTypes('compute_total', array('bool'));
 
         $resolver->setAllowedValues('cell_type', array(null, 'th', 'td'));
         $resolver->setAllowedValues('join_type', array(null, 'join', 'leftJoin', 'innerJoin'));
@@ -1110,4 +1128,51 @@ abstract class AbstractColumn implements ColumnInterface
         return $this;
     }
 
+    /**
+     * Get computeTotal.
+     *
+     * @return bool
+     */
+    public function getComputeTotal()
+    {
+        return $this->computeTotal;
+    }
+
+    /**
+     * Set sentIntResponse.
+     *
+     * @param bool $computeTotal
+     *
+     * @return $this
+     */
+    public function setComputeTotal($computeTotal)
+    {
+        $this->computeTotal = $computeTotal;
+
+        return $this;
+    }
+
+    /**
+     * Get total
+     *
+     * @return mixed
+     */
+    public function getTotal()
+    {
+        return $this->total;
+    }
+
+    /**
+     * Set total
+     *
+     * @param $total
+     *
+     * @return $this
+     */
+    public function setTotal($total)
+    {
+        $this->total = $total;
+
+        return $this;
+    }
 }
