@@ -9,6 +9,7 @@
 7. [Multiselect Column](#7-multiselect-column)
 8. [Number Column](#8-number-column)
 9. [Attribute Column](#9-number-column)
+10. [Link Column](#10-link-column)
 
 ## 1. Column
 
@@ -750,6 +751,60 @@ public function buildDatatable(array $options = array())
             'attributes' => function($row) {
                 return array(
                     'severity' => $row['severity']
+                );
+            }
+        ))
+
+        // ...
+    ;
+}
+```
+
+
+## 10. Link column
+
+Represents a column, with a link in each cell.
+
+
+### Options
+
+All options of [Column](#1-column).
+
+**Additional:**
+
+| Option              | Type                      | Default                               | Required | Description     |
+|---------------------|---------------------------|---------------------------------------|----------|-----------------|
+| route               | string                    | an empty string                       |          | Name of the route to generate. |
+| route_params        | array or Closure          | an empty array                        |          | Parameters needed to generate the route. |
+| empty_value         | string                    | an empty string                       |          | String to display if the content is empty. |
+| text                | null or Closure           | null                                  |          | An eventual function to transform the text of the link to display. |
+| separator           | string                    | an empty string                       |          | The separator between each element to display when there is an association. |
+| filterFunction      | null or Closure           | null                                  |          | An eventual function to filter the elements to display if there is an association. |
+| email               | bool                      | false                                 |          | Generate a link to an email address. |
+
+
+### Example
+
+``` php
+public function buildDatatable(array $options = array())
+{
+    // ...
+
+    $this->columnBuilder
+        ->add('referents', LinkColumn::class, array(
+            'title'           => "Referents",
+            'empty_value'     => '<span class="comment">none</span>',
+            'separator'       => ', ',
+            'filterFunction'  => function($projectPerson) {
+                return $projectPerson['isInChargeOf'] === false; // I want to display only person not in charge, this data is selected with a column with sent_in_response=False
+            },
+            'text'            => function($projectPerson) {
+                return $projectPerson['person']['firstName'] . " " . $projectPerson['person']['lastName'];
+            },
+            'route'           => 'subvention_person_view',
+            'route_params'    => function($projectPerson) {
+                return array(
+                    'id' => $projectPerson['person']['id']
                 );
             }
         ))
