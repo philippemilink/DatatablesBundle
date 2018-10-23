@@ -1225,7 +1225,7 @@ abstract class AbstractColumn implements ColumnInterface
     /**
      * Set total
      *
-     * @param $total
+     * @param mixed $total
      *
      * @return $this
      */
