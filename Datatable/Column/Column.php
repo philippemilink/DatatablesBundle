@@ -41,7 +41,7 @@ class Column extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    public function renderSingleField(array &$row)
+    public function renderSingleField(array &$row, array &$resultRow)
     {
         $path = Helper::getDataPropertyPath($this->data);
 
@@ -49,7 +49,7 @@ class Column extends AbstractColumn
 
             if ($this->isEditableContentRequired($row)) {
                 $content = $this->renderTemplate($this->accessor->getValue($row, $path), $row[$this->editable->getPk()]);
-                $this->accessor->setValue($row, $path, $content);
+                $this->accessor->setValue($resultRow, $path, $content);
             }
 
         }
@@ -60,7 +60,7 @@ class Column extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    public function renderToMany(array &$row)
+    public function renderToMany(array &$row, array &$resultRow)
     {
         $value = null;
         $path = Helper::getDataPropertyPath($this->data, $value);
@@ -85,7 +85,7 @@ class Column extends AbstractColumn
                             $currentObjectPath
                         );
 
-                        $this->accessor->setValue($row, $currentPath, $content);
+                        $this->accessor->setValue($resultRow, $currentPath, $content);
                     }
                 } else {
                     // no placeholder - leave this blank
