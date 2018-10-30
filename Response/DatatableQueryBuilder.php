@@ -231,6 +231,7 @@ class DatatableQueryBuilder
      * Init column arrays for select, search, order and joins.
      *
      * @return $this
+     * @throws Exception
      */
     private function initColumnArrays()
     {
@@ -249,8 +250,10 @@ class DatatableQueryBuilder
                     // Select
                     $selectDql = preg_replace('/\{([\w]+)\}/', '$1', $dql);
                     $this->addSelectColumn(null, $selectDql.' '.$columnAlias);
+
                     // Order on alias column name
                     $this->addOrderColumn($column, null, $columnAlias);
+
                     // Fix subqueries alias duplication
                     $searchDql = preg_replace('/\{([\w]+)\}/', '$1_search', $dql);
                     $this->addSearchColumn($column, null, $searchDql);
@@ -704,7 +707,13 @@ class DatatableQueryBuilder
      */
     private function addOrderColumn($column, $columnTableName, $data)
     {
-        true === $this->accessor->getValue($column, 'orderable') ? $this->orderColumns[] = ($columnTableName ? $columnTableName.'.' : '').$data : $this->orderColumns[] = null;
+        if (true === $this->accessor->getValue($column, 'sent_in_response')) {
+            if (true === $this->accessor->getValue($column, 'orderable')) {
+                $this->orderColumns[] = ($columnTableName ? $columnTableName.'.' : '').$data;
+            } else {
+                $this->orderColumns[] = null;
+            }
+        }
 
         return $this;
     }
