@@ -143,6 +143,13 @@ abstract class AbstractDatatable implements DatatableInterface
      */
     protected $accessor;
 
+    /**
+     * Changes to make to the query.
+     *
+     * @var \Closure|null
+     */
+    protected $changesQuery;
+
     //-------------------------------------------------
 
     /**
@@ -203,6 +210,8 @@ abstract class AbstractDatatable implements DatatableInterface
         $this->language = new Language();
 
         $this->accessor = PropertyAccess::createPropertyAccessor();
+
+        $this->changesQuery = null;
     }
 
     //-------------------------------------------------
@@ -348,6 +357,22 @@ abstract class AbstractDatatable implements DatatableInterface
                 $this->getColumnBuilder()->setColumnTotal(str_replace('___', '.', $key), $value);
             }
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setChangesQuery($changes)
+    {
+        $this->changesQuery = $changes;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getChangesQuery()
+    {
+        return $this->changesQuery;
     }
 
     //-------------------------------------------------

@@ -62,6 +62,35 @@ public function indexAction(Request $request)
 }
 ```
 
+An other way of doing it is customizing the query direclty after building the database in the controller. This allows to
+apply this change to all queries related to the datatable (displayed content, counters, computed totals...):
+``` php
+public function viewUserAction(Request $request, User $user)
+{
+    // ...
+    
+    $isAjax = $request->isXmlHttpRequest();
+    
+    /** @var DatatableInterface $datatable */
+    $datatable = $this->get('sg_datatables.factory')->create(PostDatatable::class, "post");
+    $datatable->buildDatatable();
+    $datatable->setChangesQuery(function($qb) use ($user) {
+        $qb->andWhere('post.createdBy = :user')
+            ->setParameter('user', $user);
+    });
+
+    if ($isAjax) {
+        $responseService = $this->get('sg_datatables.response');
+        $responseService->setDatatable($datatable);
+        $responseService->getDatatableQueryBuilder();
+
+        return $responseService->getResponse();
+    }
+
+    // ...
+}
+```
+
 ## 2. Subqueries
 
 Sometimes it is needed to count the number of rows or concatenate multiple fields.

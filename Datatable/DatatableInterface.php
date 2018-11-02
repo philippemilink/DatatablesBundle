@@ -153,4 +153,18 @@ interface DatatableInterface
      * @return void
      */
     public function computeTotals();
+
+    /**
+     * Customize the query built for the datatable
+     *
+     * @param \Closure|null $changes
+     */
+    public function setChangesQuery($changes);
+
+    /**
+     * Get the closure to change the query
+     *
+     * @return \Closure|null
+     */
+    public function getChangesQuery();
 }

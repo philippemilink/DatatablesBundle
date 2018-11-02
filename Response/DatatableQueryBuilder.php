@@ -163,6 +163,13 @@ class DatatableQueryBuilder
     private $ajax;
 
     /**
+     * Changes to make to the query.
+     *
+     * @var \Closure|null
+     */
+    private $changesQuery;
+
+    /**
      * Flag indicating state of query cache for records retrieval. This value is passed to Query object when it is
      * prepared. Default value is false
      * @var bool
@@ -225,6 +232,8 @@ class DatatableQueryBuilder
         $this->ajax = $datatable->getAjax();
 
         $this->initColumnArrays();
+
+        $this->changesQuery = $datatable->getChangesQuery();
     }
 
     /**
@@ -362,6 +371,10 @@ class DatatableQueryBuilder
         $this->setWhere($qb);
         $this->setOrderBy($qb);
         $this->setLimit($qb);
+
+        if ($this->changesQuery !== null) {
+            call_user_func($this->changesQuery, $qb);
+        }
 
         return $qb;
     }
@@ -548,6 +561,11 @@ class DatatableQueryBuilder
     public function getCountAllResults()
     {
         $qb = clone $this->qb;
+
+        if ($this->changesQuery !== null) {
+            call_user_func($this->changesQuery, $qb);
+        }
+
         $qb->select('count(distinct '.$this->entityShortName.'.'.$this->rootEntityIdentifier.')');
         $qb->resetDQLPart('orderBy');
         $this->setJoins($qb);
@@ -592,6 +610,11 @@ class DatatableQueryBuilder
         }
 
         $queryString = rtrim($queryString, ", ") . " ";
+
+        if ($this->changesQuery !== null) {
+            call_user_func($this->changesQuery, $qb);
+        }
+
         $qb->select($queryString);
         $qb->resetDQLPart('orderBy');
 
