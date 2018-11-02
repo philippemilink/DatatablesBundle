@@ -17,35 +17,406 @@
         };
 
         var language = {
-            {% include '@SgDatatables/datatable/language.html.twig' %}
+            {% if sg_datatables_view.language.language is same as(null) %}
+                {% if sg_datatables_view.language.cdnLanguageByLocale is same as(true) %}
+                    "language": {
+                        "url": "{{ asset(sg_datatables_view.language.languageCDNFile[app.request.locale|slice(0, 2)], 'datatables_cdn') }}"
+                    }
+                {% endif %}
+
+                {% if sg_datatables_view.language.languageByLocale is same as(true) %}
+                    "language": {% include '@SgDatatables/i18n/' ~ app.request.locale|slice(0, 2) ~ '.json.twig' %}
+                {% endif %}
+            {% else %}
+                "language": {% include '@SgDatatables/i18n/' ~ sg_datatables_view.language.language|slice(0, 2) ~ '.json.twig' %}
+            {% endif %}
         };
 
         var ajax = {
-            {% include '@SgDatatables/datatable/ajax.html.twig' %}
+            {% set ajax_vars %}
+                {% if sg_datatables_view.ajax.url is not same as(null) %}
+                    "url": "{{ sg_datatables_view.ajax.url|raw }}",
+                {% endif %}
+                "type": "{{ sg_datatables_view.ajax.type }}",
+                {% if sg_datatables_view.ajax.data is not same as(null) %}
+                    "data": {{ sg_datatables_view.ajax.data|raw }},
+                {% endif %}
+            {% endset %}
+
+            "serverSide": true,
+            {% if sg_datatables_view.ajax.pipeline > 0 %}
+                "ajax": $.fn.dataTable.pipeline({
+                    {{ ajax_vars }}
+                    "pages": {{ sg_datatables_view.ajax.pipeline }}
+                }),
+            {% else %}
+                "ajax": {
+                    {{ ajax_vars }}
+                },
+            {% endif %}
         };
 
         var options = {
-            {% include '@SgDatatables/datatable/options.html.twig' %}
+            {% if sg_datatables_view.options.deferLoading is not same as(null) %}
+                "deferLoading": {{ sg_datatables_view.options.deferLoading }},
+            {% endif %}
+            {% if sg_datatables_view.options.displayStart is not same as(null) %}
+                "displayStart": {{ sg_datatables_view.options.displayStart }},
+            {% endif %}
+            {% if sg_datatables_view.options.dom is not same as(null) %}
+                "dom": "{{ sg_datatables_view.options.dom|e('js') }}",
+            {% endif %}
+            {% if sg_datatables_view.options.lengthMenu is not same as(null) %}
+                "lengthMenu": {{ sg_datatables_view.options.lengthMenu|raw }},
+            {% endif %}
+            {% if sg_datatables_view.options.order is not same as(null) %}
+                "order": {{ sg_datatables_view.options.order|raw }},
+            {% endif %}
+            {% if sg_datatables_view.options.orderCellsTop is not same as(null) %}
+                "orderCellsTop": {{ sg_datatables_view.options.orderCellsTop|sg_datatables_bool_var }},
+            {% endif %}
+            {% if sg_datatables_view.options.orderClasses is not same as(null) %}
+                "orderClasses": {{ sg_datatables_view.options.orderClasses|sg_datatables_bool_var }},
+            {% endif %}
+            {% if sg_datatables_view.options.orderFixed is not same as(null) %}
+                "orderFixed": {{ sg_datatables_view.options.orderFixed|raw }},
+            {% endif %}
+            {% if sg_datatables_view.options.orderMulti is not same as(null) %}
+                "orderMulti": {{ sg_datatables_view.options.orderMulti|sg_datatables_bool_var }},
+            {% endif %}
+            {% if sg_datatables_view.options.pageLength is not same as(null) %}
+                "pageLength": {{ sg_datatables_view.options.pageLength }},
+            {% endif %}
+            {% if sg_datatables_view.options.pagingType is not same as(null) %}
+                "pagingType": "{{ sg_datatables_view.options.pagingType }}",
+            {% endif %}
+            {% if sg_datatables_view.options.renderer is not same as(null) %}
+                "renderer": "{{ sg_datatables_view.options.renderer }}",
+            {% endif %}
+            {% if sg_datatables_view.options.retrieve is not same as(null) %}
+                "retrieve": {{ sg_datatables_view.options.retrieve|sg_datatables_bool_var }},
+            {% endif %}
+            {% if sg_datatables_view.options.rowId is not same as(null) %}
+                "rowId": "{{ sg_datatables_view.options.rowId }}",
+            {% endif %}
+            {% if sg_datatables_view.options.scrollCollapse is not same as(null) %}
+                "scrollCollapse": {{ sg_datatables_view.options.scrollCollapse|sg_datatables_bool_var }},
+            {% endif %}
+            {% if sg_datatables_view.options.searchDelay is not same as(null) %}
+                "searchDelay": {{ sg_datatables_view.options.searchDelay }},
+            {% endif %}
+            {% if sg_datatables_view.options.stateDuration is not same as(null) %}
+                "stateDuration": {{ sg_datatables_view.options.stateDuration }},
+            {% endif %}
+            {% if sg_datatables_view.options.stripeClasses is not same as(null) %}
+                "stripeClasses": {{ sg_datatables_view.options.stripeClasses|raw }},
+            {% endif %}
         };
 
         var features = {
-            {% include '@SgDatatables/datatable/features.html.twig' %}
+            {% if sg_datatables_view.features.autoWidth is not same as(null) %}
+                "autoWidth": {{ sg_datatables_view.features.autoWidth|sg_datatables_bool_var }},
+            {% endif %}
+            {% if sg_datatables_view.features.deferRender is not same as(null) %}
+                "deferRender": {{ sg_datatables_view.features.deferRender|sg_datatables_bool_var }},
+            {% endif %}
+            {% if sg_datatables_view.features.info is not same as(null) %}
+                "info": {{ sg_datatables_view.features.info|sg_datatables_bool_var }},
+            {% endif %}
+            {% if sg_datatables_view.features.lengthChange is not same as(null) %}
+                "lengthChange": {{ sg_datatables_view.features.lengthChange|sg_datatables_bool_var }},
+            {% endif %}
+            {% if sg_datatables_view.features.ordering is not same as(null) %}
+                "ordering": {{ sg_datatables_view.features.ordering|sg_datatables_bool_var }},
+            {% endif %}
+            {% if sg_datatables_view.features.paging is not same as(null) %}
+                "paging": {{ sg_datatables_view.features.paging|sg_datatables_bool_var }},
+            {% endif %}
+            {% if sg_datatables_view.features.processing is not same as(null) %}
+                "processing": {{ sg_datatables_view.features.processing|sg_datatables_bool_var }},
+            {% endif %}
+            {% if sg_datatables_view.features.scrollX is not same as(null) %}
+                "scrollX": {{ sg_datatables_view.features.scrollX|sg_datatables_bool_var }},
+            {% endif %}
+            {% if sg_datatables_view.features.scrollY is not same as(null) %}
+                "scrollY": "{{ sg_datatables_view.features.scrollY }}",
+            {% endif %}
+            {% if sg_datatables_view.features.searching is not same as(null) %}
+                "searching": {{ sg_datatables_view.features.searching|sg_datatables_bool_var }},
+            {% endif %}
+            {% if sg_datatables_view.features.stateSave is not same as(null) %}
+                "stateSave": {{ sg_datatables_view.features.stateSave|sg_datatables_bool_var }},
+            {% endif %}
         };
 
         var callbacks = {
-            {% include '@SgDatatables/datatable/callbacks.html.twig' %}
+            {% if sg_datatables_view.callbacks.createdRow is not same as(null) %}
+                {% if sg_datatables_view.callbacks.createdRow['vars'] is defined %}
+                    {% set vars = sg_datatables_view.callbacks.createdRow['vars'] %}
+                {% else %}
+                    {% set vars = {} %}
+                {% endif %}
+                "createdRow": {% include sg_datatables_view.callbacks.createdRow['template'] with vars %},
+            {% endif %}
+            {% if sg_datatables_view.callbacks.drawCallback is not same as(null) %}
+                {% if sg_datatables_view.callbacks.drawCallback['vars'] is defined %}
+                    {% set vars = sg_datatables_view.callbacks.drawCallback['vars'] %}
+                {% else %}
+                    {% set vars = {} %}
+                {% endif %}
+                "drawCallback": {% include sg_datatables_view.callbacks.drawCallback['template'] with vars %},
+            {% endif %}
+            {% if sg_datatables_view.callbacks.footerCallback is not same as(null) %}
+                {% if sg_datatables_view.callbacks.footerCallback['vars'] is defined %}
+                    {% set vars = sg_datatables_view.callbacks.footerCallback['vars'] %}
+                {% else %}
+                    {% set vars = {} %}
+                {% endif %}
+                "footerCallback": {% include sg_datatables_view.callbacks.footerCallback['template'] with vars %},
+            {% endif %}
+            {% if sg_datatables_view.callbacks.formatNumber is not same as(null) %}
+                {% if sg_datatables_view.callbacks.formatNumber['vars'] is defined %}
+                    {% set vars = sg_datatables_view.callbacks.formatNumber['vars'] %}
+                {% else %}
+                    {% set vars = {} %}
+                {% endif %}
+                "formatNumber": {% include sg_datatables_view.callbacks.formatNumber['template'] with vars %},
+            {% endif %}
+            {% if sg_datatables_view.callbacks.headerCallback is not same as(null) %}
+                {% if sg_datatables_view.callbacks.headerCallback['vars'] is defined %}
+                    {% set vars = sg_datatables_view.callbacks.headerCallback['vars'] %}
+                {% else %}
+                    {% set vars = {} %}
+                {% endif %}
+                "headerCallback": {% include sg_datatables_view.callbacks.headerCallback['template'] with vars %},
+            {% endif %}
+            {% if sg_datatables_view.callbacks.infoCallback is not same as(null) %}
+                {% if sg_datatables_view.callbacks.infoCallback['vars'] is defined %}
+                    {% set vars = sg_datatables_view.callbacks.infoCallback['vars'] %}
+                {% else %}
+                    {% set vars = {} %}
+                {% endif %}
+                "infoCallback": {% include sg_datatables_view.callbacks.infoCallback['template'] with vars %},
+            {% endif %}
+            {% if sg_datatables_view.callbacks.initComplete is not same as(null) %}
+                {% if sg_datatables_view.callbacks.initComplete['vars'] is defined %}
+                    {% set vars = sg_datatables_view.callbacks.initComplete['vars'] %}
+                {% else %}
+                    {% set vars = {} %}
+                {% endif %}
+                "initComplete": {% include sg_datatables_view.callbacks.initComplete['template'] with vars %},
+            {% endif %}
+            {% if sg_datatables_view.callbacks.preDrawCallback is not same as(null) %}
+                {% if sg_datatables_view.callbacks.preDrawCallback['vars'] is defined %}
+                    {% set vars = sg_datatables_view.callbacks.preDrawCallback['vars'] %}
+                {% else %}
+                    {% set vars = {} %}
+                {% endif %}
+                "preDrawCallback": {% include sg_datatables_view.callbacks.preDrawCallback['template'] with vars %},
+            {% endif %}
+            {% if sg_datatables_view.callbacks.rowCallback is not same as(null) %}
+                {% if sg_datatables_view.callbacks.rowCallback['vars'] is defined %}
+                    {% set vars = sg_datatables_view.callbacks.rowCallback['vars'] %}
+                {% else %}
+                    {% set vars = {} %}
+                {% endif %}
+                "rowCallback": {% include sg_datatables_view.callbacks.rowCallback['template'] with vars%},
+            {% endif %}
+            {% if sg_datatables_view.callbacks.stateLoadCallback is not same as(null) %}
+                {% if sg_datatables_view.callbacks.stateLoadCallback['vars'] is defined %}
+                    {% set vars = sg_datatables_view.callbacks.stateLoadCallback['vars'] %}
+                {% else %}
+                    {% set vars = {} %}
+                {% endif %}
+                "stateLoadCallback": {% include sg_datatables_view.callbacks.stateLoadCallback['template'] with vars %},
+            {% endif %}
+            {% if sg_datatables_view.callbacks.stateLoaded is not same as(null) %}
+                {% if sg_datatables_view.callbacks.stateLoaded['vars'] is defined %}
+                    {% set vars = sg_datatables_view.callbacks.stateLoaded['vars'] %}
+                {% else %}
+                    {% set vars = {} %}
+                {% endif %}
+                "stateLoaded": {% include sg_datatables_view.callbacks.stateLoaded['template'] with vars %},
+            {% endif %}
+            {% if sg_datatables_view.callbacks.stateLoadParams is not same as(null) %}
+                {% if sg_datatables_view.callbacks.stateLoadParams['vars'] is defined %}
+                    {% set vars = sg_datatables_view.callbacks.stateLoadParams['vars'] %}
+                {% else %}
+                    {% set vars = {} %}
+                {% endif %}
+                "stateLoadParams": {% include sg_datatables_view.callbacks.stateLoadParams['template'] with vars %},
+            {% endif %}
+            {% if sg_datatables_view.callbacks.stateSaveCallback is not same as(null) %}
+                {% if sg_datatables_view.callbacks.stateSaveCallback['vars'] is defined %}
+                    {% set vars = sg_datatables_view.callbacks.stateSaveCallback['vars'] %}
+                {% else %}
+                    {% set vars = {} %}
+                {% endif %}
+                "stateSaveCallback": {% include sg_datatables_view.callbacks.stateSaveCallback['template'] with vars %},
+            {% endif %}
+            {% if sg_datatables_view.callbacks.stateSaveParams is not same as(null) %}
+                {% if sg_datatables_view.callbacks.stateSaveParams['vars'] is defined %}
+                    {% set vars = sg_datatables_view.callbacks.stateSaveParams['vars'] %}
+                {% else %}
+                    {% set vars = {} %}
+                {% endif %}
+                "stateSaveParams": {% include sg_datatables_view.callbacks.stateSaveParams['template'] with vars %},
+            {% endif %}
         };
 
         var extensions = {
-            {% include '@SgDatatables/datatable/extensions.html.twig' %}
+            {# Buttons Extension #}
+            {% if sg_datatables_view.extensions.buttons is not same as(null) %}
+                {% if sg_datatables_view.extensions.buttons is same as(true) %}
+                    {# the easiest way to activate the extension - buttons is a boolean value (true) #}
+                    buttons: true,
+                {% else %}
+                    {# buttons is defined and not boolean, rather given as an object - handle the Buttons class options #}
+                    buttons: [
+                        {% if sg_datatables_view.extensions.buttons.showButtons is defined and sg_datatables_view.extensions.buttons.showButtons is not same as(null) %}
+                            {{ sg_datatables_view.extensions.buttons.showButtons|raw }},
+                        {% endif %}
+                        {% if sg_datatables_view.extensions.buttons.createButtons is defined and sg_datatables_view.extensions.buttons.createButtons is not same as(null) %}
+                            {% for button in sg_datatables_view.extensions.buttons.createButtons %}
+                                {% include '@SgDatatables/datatable/button.html.twig' %}
+                            {% endfor %}
+                        {% endif %}
+                    ],
+                {% endif %}
+            {% endif %}
+
+            {# Responsive Extension #}
+            {% if sg_datatables_view.extensions.responsive is not same as(null) %}
+                {% if sg_datatables_view.extensions.responsive is same as(true) %}
+                    {# the easiest way to activate the extension - responsive is a boolean value (true) #}
+                    responsive: true,
+                {% elseif sg_datatables_view.extensions.responsive.details is defined and sg_datatables_view.extensions.responsive.details is not same as(null) %}
+                    {# responsive is given as an object to handle the 'details' options #}
+                    responsive: {
+                        {% if sg_datatables_view.extensions.responsive.details is not iterable %}
+                            {# details is a simple boolean value #}
+                            details: {{ sg_datatables_view.extensions.responsive.details|sg_datatables_bool_var }},
+                        {% else %}
+                            {# details is an array #}
+                            details: {
+                                {% if sg_datatables_view.extensions.responsive.details.type is defined %}
+                                    type: "sg_datatables_view.extensions.responsive.details.type",
+                                {% endif %}
+                                {% if sg_datatables_view.extensions.responsive.details.target is defined %}
+                                    target: "sg_datatables_view.extensions.responsive.details.target",
+                                {% endif %}
+                                {% if sg_datatables_view.extensions.responsive.details.renderer is defined %}
+                                    {% if sg_datatables_view.extensions.responsive.details.renderer['vars'] is defined %}
+                                        {% set vars = sg_datatables_view.extensions.responsive.details.renderer['vars'] %}
+                                    {% else %}
+                                        {% set vars = {} %}
+                                    {% endif %}
+                                    renderer: {% include sg_datatables_view.extensions.responsive.details.renderer['template'] with vars %},
+                                {% endif %}
+                                {% if sg_datatables_view.extensions.responsive.details.display is defined %}
+                                    {% if sg_datatables_view.extensions.responsive.details.display['vars'] is defined %}
+                                        {% set vars = sg_datatables_view.extensions.responsive.details.display['vars'] %}
+                                    {% else %}
+                                        {% set vars = {} %}
+                                    {% endif %}
+                                    display: {% include sg_datatables_view.extensions.responsive.details.display['template'] with vars %},
+                                {% endif %}
+                            },
+                        {% endif %}
+                    },
+                {% endif %}
+            {% endif %}
+
+            {# Select Extension #}
+            {% if sg_datatables_view.extensions.select is not same as(null) %}
+                {% if sg_datatables_view.extensions.select is same as(true) %}
+                    {# the easiest way to activate the extension - select is a boolean value (true) #}
+                    select: true,
+                {% else %}
+                    {# select is defined and not boolean, rather given as an object - handle the Select class options #}
+                    select: {
+                        {% if sg_datatables_view.extensions.select.blurable is defined and sg_datatables_view.extensions.select.blurable is not same as(null) %}
+                            blurable: {{ sg_datatables_view.extensions.select.blurable|sg_datatables_bool_var }},
+                        {% endif %}
+                        {% if sg_datatables_view.extensions.select.className is defined and sg_datatables_view.extensions.select.className is not same as(null) %}
+                            className: "{{ sg_datatables_view.extensions.select.className }}",
+                        {% endif %}
+                        {% if sg_datatables_view.extensions.select.info is defined and sg_datatables_view.extensions.select.info is not same as(null) %}
+                            info: {{ sg_datatables_view.extensions.select.info|sg_datatables_bool_var }},
+                        {% endif %}
+                        {% if sg_datatables_view.extensions.select.items is defined and sg_datatables_view.extensions.select.items is not same as(null) %}
+                            items: "{{ sg_datatables_view.extensions.select.items }}",
+                        {% endif %}
+                        {% if sg_datatables_view.extensions.select.selector is defined and sg_datatables_view.extensions.select.selector is not same as(null) %}
+                            selector: "{{ sg_datatables_view.extensions.select.selector }}",
+                        {% endif %}
+                        {% if sg_datatables_view.extensions.select.style is defined and sg_datatables_view.extensions.select.style is not same as(null) %}
+                            style: "{{ sg_datatables_view.extensions.select.style }}",
+                        {% endif %}
+                    },
+                {% endif %}
+            {% endif %}
+
+            {# RowGroup Extension #}
+            {% if sg_datatables_view.extensions.rowGroup is not same as(null) %}
+                rowGroup: {
+                    {% if sg_datatables_view.extensions.rowGroup.enable is same as(true) %}
+                        enable: true,
+                    {% endif %}
+                    {% if sg_datatables_view.extensions.rowGroup.dataSrc is defined and sg_datatables_view.extensions.rowGroup.dataSrc is not same as(null) %}
+                        dataSrc: '{{ sg_datatables_view.extensions.rowGroup.dataSrc }}',
+                    {% endif %}
+                    {% if sg_datatables_view.extensions.rowGroup.startRender is defined and sg_datatables_view.extensions.rowGroup.startRender is not same as(null) %}
+                        {% set vars = {} %}
+                        {% if sg_datatables_view.extensions.rowGroup.startRender.vars is defined %}
+                            {% set vars = sg_datatables_view.extensions.rowGroup.startRender.vars %}
+                        {% endif %}
+                        startRender: {% include sg_datatables_view.extensions.rowGroup.startRender.template with vars %},
+                    {% endif %}
+                    {% if sg_datatables_view.extensions.rowGroup.endRender is defined and sg_datatables_view.extensions.rowGroup.endRender is not same as(null) %}
+                        {% set vars = {} %}
+                        {% if sg_datatables_view.extensions.rowGroup.endRender.vars is defined %}
+                            {% set vars = sg_datatables_view.extensions.rowGroup.endRender.vars %}
+                        {% endif %}
+                        endRender: {% include sg_datatables_view.extensions.rowGroup.endRender.template with vars %},
+                    {% endif %}
+                    {% if sg_datatables_view.extensions.rowGroup.className is defined and sg_datatables_view.extensions.rowGroup.className is not same as(null) %}
+                        className: '{{ sg_datatables_view.extensions.rowGroup.className }}'
+                    {% endif %}
+                    {% if sg_datatables_view.extensions.rowGroup.emptyDataGroup is defined and sg_datatables_view.extensions.rowGroup.emptyDataGroup is not same as(null) %}
+                        emptyDataGroup: '{{ sg_datatables_view.extensions.rowGroup.emptyDataGroup }}'
+                    {% endif %}
+                    {% if sg_datatables_view.extensions.rowGroup.endClassName is defined and sg_datatables_view.extensions.rowGroup.endClassName is not same as(null) %}
+                        endClassName: '{{ sg_datatables_view.extensions.rowGroup.endClassName }}'
+                    {% endif %}
+                    {% if sg_datatables_view.extensions.rowGroup.startClassName is defined and sg_datatables_view.extensions.rowGroup.startClassName is not same as(null) %}
+                        startClassName: '{{ sg_datatables_view.extensions.rowGroup.startClassName }}'
+                    {% endif %}
+                },
+            {% endif %}
+
+            {# ColReorder Extension #}
+            {% if sg_datatables_view.extensions.colReorder is same as(true) %}
+                colReorder: true,
+            {% endif %}
         };
 
         var columns = {
-            {% include '@SgDatatables/datatable/columns.html.twig' %}
+            "columns": [
+                {% for column in sg_datatables_view.columnBuilder.columns %}
+                    {% if column.sentInResponse %}
+                        {% include column.getOptionsTemplate %}
+                    {% endif %}
+                {% endfor %}
+            ]
         };
 
         var initialSearch = {
-            {% include '@SgDatatables/datatable/initial_search.html.twig' %}
+            "searchCols": [
+                {% for column in sg_datatables_view.columnBuilder.columns %}
+                    {% if column.filter.initialSearch is defined and column.filter.initialSearch|length > 0 %}{"search" : "{{ column.filter.initialSearch }}"}{% else %}null{% endif %},
+                {% endfor %}
+            ]
         };
 
         function postCreateDatatable(pipeline) {
@@ -68,7 +439,126 @@
 
             if (!$.fn.dataTable.isDataTable(selector)) {
                 $(selector)
-                    {% include '@SgDatatables/datatable/events.html.twig' %}
+                {% if sg_datatables_view.events.columnSizing is not same as(null) %}
+                    {% if sg_datatables_view.events.columnSizing['vars'] is defined %}
+                        {% set vars = sg_datatables_view.events.columnSizing['vars'] %}
+                    {% else %}
+                        {% set vars = {} %}
+                    {% endif %}
+                    .on('column-sizing.dt', {% include sg_datatables_view.events.columnSizing['template'] with vars %})
+                {% endif %}
+                {% if sg_datatables_view.events.columnVisibility is not same as(null) %}
+                    {% if sg_datatables_view.events.columnVisibility['vars'] is defined %}
+                        {% set vars = sg_datatables_view.events.columnVisibility['vars'] %}
+                    {% else %}
+                        {% set vars = {} %}
+                    {% endif %}
+                    .on('column-visibility.dt', {% include sg_datatables_view.events.columnVisibility['template'] with vars %})
+                {% endif %}
+                {% if sg_datatables_view.events.destroy is not same as(null) %}
+                    {% if sg_datatables_view.events.destroy['vars'] is defined %}
+                        {% set vars = sg_datatables_view.events.destroy['vars'] %}
+                    {% else %}
+                        {% set vars = {} %}
+                    {% endif %}
+                    .on('destroy.dt', {% include sg_datatables_view.events.destroy['template'] with vars %})
+                {% endif %}
+                {% if sg_datatables_view.events.error is not same as(null) %}
+                    {% if sg_datatables_view.events.error['vars'] is defined %}
+                        {% set vars = sg_datatables_view.events.error['vars'] %}
+                    {% else %}
+                        {% set vars = {} %}
+                    {% endif %}
+                    .on('error.dt', {% include sg_datatables_view.events.error['template'] with vars %})
+                {% endif %}
+                {% if sg_datatables_view.events.length is not same as(null) %}
+                    {% if sg_datatables_view.events.length['vars'] is defined %}
+                        {% set vars = sg_datatables_view.events.length['vars'] %}
+                    {% else %}
+                        {% set vars = {} %}
+                    {% endif %}
+                    .on('length.dt', {% include sg_datatables_view.events.length['template'] with vars %})
+                {% endif %}
+                {% if sg_datatables_view.events.order is not same as(null) %}
+                    {% if sg_datatables_view.events.order['vars'] is defined %}
+                        {% set vars = sg_datatables_view.events.order['vars'] %}
+                    {% else %}
+                        {% set vars = {} %}
+                    {% endif %}
+                    .on('order.dt', {% include sg_datatables_view.events.order['template'] with vars %})
+                {% endif %}
+                {% if sg_datatables_view.events.page is not same as(null) %}
+                    {% if sg_datatables_view.events.page['vars'] is defined %}
+                        {% set vars = sg_datatables_view.events.page['vars'] %}
+                    {% else %}
+                        {% set vars = {} %}
+                    {% endif %}
+                    .on('page.dt', {% include sg_datatables_view.events.page['template'] with vars %})
+                {% endif %}
+                {% if sg_datatables_view.events.preInit is not same as(null) %}
+                    {% if sg_datatables_view.events.preInit['vars'] is defined %}
+                        {% set vars = sg_datatables_view.events.preInit['vars'] %}
+                    {% else %}
+                        {% set vars = {} %}
+                    {% endif %}
+                    .on('preInit.dt', {% include sg_datatables_view.events.preInit['template'] with vars %})
+                {% endif %}
+                {% if sg_datatables_view.events.preXhr is not same as(null) %}
+                    {% if sg_datatables_view.events.preXhr['vars'] is defined %}
+                        {% set vars = sg_datatables_view.events.preXhr['vars'] %}
+                    {% else %}
+                        {% set vars = {} %}
+                    {% endif %}
+                    .on('preXhr.dt', {% include sg_datatables_view.events.preXhr['template'] with vars %})
+                {% endif %}
+                {% if sg_datatables_view.events.processing is not same as(null) %}
+                    {% if sg_datatables_view.events.processing['vars'] is defined %}
+                        {% set vars = sg_datatables_view.events.processing['vars'] %}
+                    {% else %}
+                        {% set vars = {} %}
+                    {% endif %}
+                    .on('processing.dt', {% include sg_datatables_view.events.processing['template'] with vars %})
+                {% endif %}
+                {% if sg_datatables_view.events.search is not same as(null) %}
+                    {% if sg_datatables_view.events.search['vars'] is defined %}
+                        {% set vars = sg_datatables_view.events.search['vars'] %}
+                    {% else %}
+                        {% set vars = {} %}
+                    {% endif %}
+                    .on('search.dt', {% include sg_datatables_view.events.search['template'] with vars %})
+                {% endif %}
+                {% if sg_datatables_view.events.stateLoaded is not same as(null) %}
+                    {% if sg_datatables_view.events.stateLoaded['vars'] is defined %}
+                        {% set vars = sg_datatables_view.events.stateLoaded['vars'] %}
+                    {% else %}
+                        {% set vars = {} %}
+                    {% endif %}
+                    .on('stateLoaded.dt', {% include sg_datatables_view.events.stateLoaded['template'] with vars %})
+                {% endif %}
+                {% if sg_datatables_view.events.stateLoadParams is not same as(null) %}
+                    {% if sg_datatables_view.events.stateLoadParams['vars'] is defined %}
+                        {% set vars = sg_datatables_view.events.stateLoadParams['vars'] %}
+                    {% else %}
+                        {% set vars = {} %}
+                    {% endif %}
+                    .on('stateLoadParams.dt', {% include sg_datatables_view.events.stateLoadParams['template'] with vars %})
+                {% endif %}
+                {% if sg_datatables_view.events.stateSaveParams is not same as(null) %}
+                    {% if sg_datatables_view.events.stateSaveParams['vars'] is defined %}
+                        {% set vars = sg_datatables_view.events.stateSaveParams['vars'] %}
+                    {% else %}
+                        {% set vars = {} %}
+                    {% endif %}
+                    .on('stateSaveParams.dt', {% include sg_datatables_view.events.stateSaveParams['template'] with vars %})
+                {% endif %}
+                {% if sg_datatables_view.events.xhr is not same as(null) %}
+                    {% if sg_datatables_view.events.xhr['vars'] is defined %}
+                        {% set vars = sg_datatables_view.events.xhr['vars'] %}
+                    {% else %}
+                        {% set vars = {} %}
+                    {% endif %}
+                    .on('xhr.dt', {% include sg_datatables_view.events.xhr['template'] with vars %})
+                {% endif %}
                 ;
             
                 oTable = $(selector)
@@ -77,7 +567,47 @@
                     ;
 
                 {% if true == sg_datatables_view.options.individualFiltering %}
-                    {% include '@SgDatatables/datatable/search.js.twig' %}
+                function drawTable() {
+                    {% if sg_datatables_view.ajax.pipeline > 0 %}
+                        oTable.clearPipeline().draw();
+                    {% else %}
+                        oTable.draw();
+                    {% endif %}
+                }
+
+                var search = $.fn.dataTable.util.throttle(
+                    function(event) {
+                        if (event.type == "keyup") {
+                            if (
+                                event.keyCode == 37 ||
+                                event.keyCode == 38 ||
+                                event.keyCode == 39 ||
+                                event.keyCode == 40 ||
+                                event.keyCode == 16 ||
+                                event.keyCode == 17 ||
+                                event.keyCode == 18
+                            )
+                                return;
+                        }
+
+                        oTable
+                            .column($(event.currentTarget).data("search-column-index"))
+                            .search($(this).val());
+                        drawTable();
+                    },
+                    options.searchDelay
+                );
+
+                $(selector + '-filterrow').find("input.sg-datatables-individual-filtering").on("keyup change", search);
+
+                $(selector + '-filterrow').find("select.sg-datatables-individual-filtering").on("keyup change", function(event) {
+                    var searchValue = $(this).val();
+                    searchValue = searchValue ? searchValue.toString() : '';
+                    oTable
+                        .column($(event.currentTarget).data("search-column-index"))
+                        .search(searchValue);
+                    drawTable();
+                });
                 {% endif %}
             }
         }
