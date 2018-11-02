@@ -259,20 +259,19 @@ class NumberColumn extends Column
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getTotal()
+    {
+        return $this->renderData($this->total);
+    }
+
     //-------------------------------------------------
     // Helper
     //-------------------------------------------------
 
-    /**
-     * Render template.
-     *
-     * @param string|null $data
-     * @param string|null $pk
-     * @param string|null $path
-     *
-     * @return mixed|string
-     */
-    private function renderTemplate($data, $pk = null, $path = null)
+    private function renderData($data)
     {
         if (true === $this->useFormatCurrency) {
             if (false === is_float($data)) {
@@ -292,6 +291,22 @@ class NumberColumn extends Column
         if ($this->getSuffixString() !== null) {
             $data .= $this->getSuffixString();
         }
+
+        return $data;
+    }
+
+    /**
+     * Render template.
+     *
+     * @param string|null $data
+     * @param string|null $pk
+     * @param string|null $path
+     *
+     * @return mixed|string
+     */
+    private function renderTemplate($data, $pk = null, $path = null)
+    {
+        $data = $this->renderData($data);
 
         return $this->twig->render(
             $this->getCellContentTemplate(),

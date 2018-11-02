@@ -204,10 +204,10 @@ class ColumnBuilder
         return array_key_exists($columnType, $this->uniqueColumns) ? $this->uniqueColumns[$columnType] : null;
     }
 
-    public function setColumnTotal($dql, $total)
+    public function setColumnTotal($data, $total)
     {
         foreach ($this->columns as $column) {
-            if ($column->getDql() == $dql) {
+            if ($column->getData() === $data) {
                 $column->setTotal($total);
                 break;
             }

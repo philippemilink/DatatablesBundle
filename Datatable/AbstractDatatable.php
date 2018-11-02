@@ -345,7 +345,7 @@ abstract class AbstractDatatable implements DatatableInterface
             $totals = $datatableQueryBuilder->getComputedTotals();
 
             foreach ($totals as $key => $value) {
-                $this->getColumnBuilder()->setColumnTotal($key, $value);
+                $this->getColumnBuilder()->setColumnTotal(str_replace('___', '.', $key), $value);
             }
         }
     }

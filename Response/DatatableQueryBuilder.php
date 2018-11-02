@@ -566,16 +566,40 @@ class DatatableQueryBuilder
         $qb = clone $this->qb;
 
         $queryString = "";
+        $alias = "";
 
         foreach ($this->columns as $column) {
             if ($column->getComputeTotal()) {
-                $queryString .= 'SUM(' . $this->entityShortName . '.' . $column->getDql() . ') AS ' . $column->getDql() . ' ';
+                $queryString .= 'SUM(';
+
+                if (strpos($column->getDql(), '(') !== false) { // DQL function
+                    $alias = $column->getData();
+                }
+                else { // not a DQL function, simple field
+                    $alias = $column->getDql();
+
+                    if (strpos($column->getDql(), '.') === false) {
+                        $queryString .= $this->entityShortName . '.';
+                    }
+                }
+
+                if (strpos($alias, '.') !== false) {
+                    $alias = str_replace('.', '___', $alias);
+                }
+
+                $queryString .= $column->getDql() . ') AS ' . $alias . ', ';
             }
         }
 
+        $queryString = rtrim($queryString, ", ") . " ";
         $qb->select($queryString);
         $qb->resetDQLPart('orderBy');
-        $this->setJoins($qb);
+
+        foreach ($this->joins as $key => $value) {
+            if (0 !== substr_count($qb->getDQLPart('select')[0], $value['alias']) || 0 !== substr_count($qb->getDQLPart('where'), $value['alias'])) {
+                $qb->{$value['type']}($key, $value['alias']);
+            }
+        }
 
         $query = $qb->getQuery();
         $query->useQueryCache($this->useCountQueryCache);
